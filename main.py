@@ -39,8 +39,9 @@ def check_laadpaal_beschikbaarheid(url):
     timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
 
     try:
-        # Fetch the HTML from the website
-        response = requests.get(url)
+        # Fetch the HTML from the website with timeout
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
 
         # Use BeautifulSoup to parse the HTML
@@ -71,8 +72,9 @@ def check_laadpaal_beschikbaarheid_2(url):
     timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
 
     try:
-        # Fetch the HTML from the website
-        response = requests.get(url)
+        # Fetch the HTML from the website with timeout
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
 
         # Use BeautifulSoup to parse the HTML
@@ -103,8 +105,9 @@ def check_coolblue_msi(url):
     timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
 
     try:
-        # Fetch the HTML from the website
-        response = requests.get(url)
+        # Fetch the HTML from the website with timeout
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
 
         # Use BeautifulSoup to parse the HTML
