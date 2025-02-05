@@ -47,16 +47,80 @@ def check_laadpaal_beschikbaarheid(url):
         soup = BeautifulSoup(response.content, 'html.parser')
 
         # Find the specific <div> element with the class 'label-availability__available'
-        beschikbaarheid_div = soup.find('div', {'class': 'label-availability__available'})
+        beschikbaarheid_div = soup.find('div', {'class': 'modal-stock-web pointer stock stock-9', 'data-stock-web': '9'})
 
-        if beschikbaarheid_div:
-            print(f"{timestamp} - Laadpaal beschikbaar: Beschikbaar")
+        if beschikbaarheid_div and beschikbaarheid_div.text.strip() != "Rupture":
+            print(f"{timestamp} - Asus beschikbaar: Beschikbaar")
             play_ping_sound()  # Call the function to play the ping sound
-            send_pushover_notification(f"{timestamp} - De laadpaal is nu beschikbaar!")  # Call the function to send the Pushover notification
+            send_pushover_notification(f"{timestamp} - De Asus is nu beschikbaar!")  # Call the function to send the Pushover notification
             return True  # Signal that the loop should stop
 
         else:
-            print(f"{timestamp} - Laadpaal beschikbaar: Niet beschikbaar")
+            print(f"{timestamp} - Asus not available")
+
+    except requests.exceptions.RequestException as e:
+        print(f"{timestamp} - Error fetching the website: {e}")
+
+    return False  # Signal that the loop should continue
+
+def check_laadpaal_beschikbaarheid_2(url):
+    # Set the timezone
+    tz = pytz.timezone('Europe/Brussels')  # Adjust this to your timezone
+
+    # Get the current time in the specified timezone
+    timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+    try:
+        # Fetch the HTML from the website
+        response = requests.get(url)
+        response.raise_for_status()
+
+        # Use BeautifulSoup to parse the HTML
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # Find the specific <div> element with the class 'label-availability__available'
+        beschikbaarheid_div = soup.find('div', {'class': 'modal-stock-web pointer stock stock-9', 'data-stock-web': '9'})
+
+        if beschikbaarheid_div and beschikbaarheid_div.text.strip() != "Rupture":
+            print(f"{timestamp} - Msi beschikbaar: Beschikbaar")
+            play_ping_sound()  # Call the function to play the ping sound
+            send_pushover_notification(f"{timestamp} - De Msi is nu beschikbaar!")  # Call the function to send the Pushover notification
+            return True  # Signal that the loop should stop
+
+        else:
+            print(f"{timestamp} - Msi not available")
+
+    except requests.exceptions.RequestException as e:
+        print(f"{timestamp} - Error fetching the website: {e}")
+
+    return False  # Signal that the loop should continue
+
+def check_coolblue_msi(url):
+    # Set the timezone
+    tz = pytz.timezone('Europe/Brussels')  # Adjust this to your timezone
+
+    # Get the current time in the specified timezone
+    timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+    try:
+        # Fetch the HTML from the website
+        response = requests.get(url)
+        response.raise_for_status()
+
+        # Use BeautifulSoup to parse the HTML
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # Find the specific <div> element with the class 'label-availability__available'
+        beschikbaarheid_div = soup.find('div', {'class': 'color--unavailable'})
+
+        if beschikbaarheid_div and "Binnenkort leverbaar" in beschikbaarheid_div.text.strip():
+            print(f"{timestamp} - Msi Coolblue beschikbaar: Beschikbaar")
+            play_ping_sound()  # Call the function to play the ping sound
+            send_pushover_notification(f"{timestamp} - De MSI is nu beschikbaar op Coolblue!")  # Call the function to send the Pushover notification
+            return True  # Signal that the loop should stop
+
+        else:
+            print(f"{timestamp} - Msi Coolblue not available")
 
     except requests.exceptions.RequestException as e:
         print(f"{timestamp} - Error fetching the website: {e}")
@@ -64,8 +128,14 @@ def check_laadpaal_beschikbaarheid(url):
     return False  # Signal that the loop should continue
 
 if __name__ == "__main__":
-    url = "https://nl.chargemap.com/allego-parking-kerkhof.html"
+    url = "https://www.ldlc.pro/fiche/PB00663199.html"
+    url2 = "https://www.ldlc.pro/fiche/PB00661910.html"
+    url3 = "https://www.coolblue.be/nl/product/959803/msi-geforce-rtx-5090-ventus-3x-oc-32gb.html"
 
-    while not check_laadpaal_beschikbaarheid(url):
-        # Wait for 30 seconds before the next check
-        time.sleep(1)
+    while True:
+        if not check_laadpaal_beschikbaarheid(url):
+            time.sleep(1)
+        if not check_laadpaal_beschikbaarheid_2(url2):
+            time.sleep(1)
+        if not check_coolblue_msi(url3):
+            time.sleep(1)
